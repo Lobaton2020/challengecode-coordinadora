@@ -17,5 +17,6 @@ export const validacionUsuarioHandler = async (ctx: IContext) => {
   const createCronogramaUseCase = DEPENDENCIES_INJECTION.get<IUseCase>(
     AuthTypes.ValidarUsuarioUseCase
   );
-  return await createCronogramaUseCase.execute(ctx.body);
+  const data = await createCronogramaUseCase.execute(ctx.body);
+  return Result.ok(data);
 };

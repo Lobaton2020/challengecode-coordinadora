@@ -1,0 +1,1 @@
+INSERT INTO usuarios (id_usuario, nombre, correo, contrasena, roles, fecha_creacion) VALUES(6, 'Andres Jelipe', 'andres@example.com', '$2b$10$WJUhy76Bto821JoRaNixXuWJ8IqB/8hCQatT8xOpr0hMysYl1xB1S', 'Admin', '2025-02-07 16:35:40.521');

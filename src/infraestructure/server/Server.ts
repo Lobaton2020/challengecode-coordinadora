@@ -19,7 +19,7 @@ export class Server implements IServer {
   private logger = DEPENDENCIES_INJECTION.get<ILogger>(CommonTypes.Logger);
   private _app: express.Application;
   private _server: http.Server;
-  public _prefix: string = `/${ENV.DOMAIN}/${ENV.SERVICE_NAME}/api/v1`;
+  private _prefix: string = `/${ENV.DOMAIN}/${ENV.SERVICE_NAME}/api/v1`;
   constructor() {
     this._app = express();
     this._app.use(express.json());
@@ -114,7 +114,12 @@ export class Server implements IServer {
     });
   }
   globarErrorHandler() {
-    return (err: any | object, req: Request, res: Response, next: NextFunction) => {
+    return (
+      err: any | object,
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
       this.logger.log(
         `ERROR: ${
           err.message ?? typeof err === "object" ? JSON.stringify(err) : err
@@ -122,15 +127,15 @@ export class Server implements IServer {
       );
       if (err && err.error && err.error.isJoi) {
         return res.status(400).json({
-          isError: true,
+          is_error: true,
           data: err,
         });
       }
-      if(err?.customError){
+      if (err?.customError) {
         return res.status(err?.code).json({
           is_error: true,
           message: err.message,
-          cause: err.cause
+          cause: err.cause,
         });
       }
       return res.status(500).json({
@@ -153,5 +158,8 @@ export class Server implements IServer {
   }
   get app() {
     return this._app;
+  }
+  get prefix() {
+    return this._prefix;
   }
 }

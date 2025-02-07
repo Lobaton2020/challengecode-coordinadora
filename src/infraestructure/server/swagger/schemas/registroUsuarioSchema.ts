@@ -8,7 +8,7 @@ export const registroUsuarioSchema = {
   body: inputSwagger(IRegistroUsuarioValidation),
   response: {
     201: jsonToSchema({
-      isError: false,
+      is_error: false,
       data: null,
     }),
     400: jsonToSchema(ERROR_400),

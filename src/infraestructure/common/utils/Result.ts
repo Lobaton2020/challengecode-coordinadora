@@ -1,7 +1,7 @@
 export class Result {
   static ok(data: any) {
     return {
-      isError: false,
+      is_error: false,
       data,
     };
   }

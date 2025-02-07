@@ -1,7 +1,7 @@
 import { HttpCode } from "../enum/HttpCode";
 
 export class Exception extends Error {
-  isError: boolean = true;
+  is_error: boolean = true;
   reference: string = this.name;
   code: number = 500;
   cause?: string;
@@ -11,7 +11,7 @@ export class Exception extends Error {
     super(message);
     this.message = message;
     this.code = code;
-    this.cause = cause;
+    this.cause = cause ?? message;
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, Exception);
     }
@@ -28,7 +28,6 @@ export class CacheException extends Exception {
     super(message, HttpCode.SERVER_ERROR, cause);
   }
 }
-
 
 export class ValidationException extends Exception {
   constructor(message: string, cause?: string) {

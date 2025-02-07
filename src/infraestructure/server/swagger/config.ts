@@ -68,7 +68,7 @@ export function jsonToSchema(json: { [key: string]: JsonValue }): JsonSchema {
 }
 
 export const ERROR_500 = {
-  isError: true,
+  is_error: true,
   reference: "Error",
   code: 500,
   message: "",
@@ -76,7 +76,7 @@ export const ERROR_500 = {
 };
 
 export const ERROR_400 = {
-  isError: true,
+  is_error: true,
   message: 'body.email should match format "email"',
   detail: {
     validation: [
