@@ -14,9 +14,7 @@ import { ILogger } from "../../../modules/common/domain/repositories/ILogger";
 export class AuthDao implements IAuthRepository {
   private db = DEPENDENCIES_INJECTION.get<IDatabase<IMain>>(CommonTypes.Bd);
   @inject(CommonTypes.Logger) private logger: ILogger;
-  login(data: ILoginDto): Promise<ITokenResponse> {
-    throw new Error("Method not implemented.");
-  }
+
   async registro(data: IRegistroUsuarioDto): Promise<void> {
     try {
       const query = `INSERT INTO usuarios (nombre, correo, contrasena, fecha_creacion, roles)
@@ -31,7 +29,7 @@ export class AuthDao implements IAuthRepository {
   }
   async consultaCorreo(correo: string): Promise<IConsultaCorreoResponse | null> {
     try {
-      const query = `SELECT contrasena FROM usuarios WHERE correo = $1`;
+      const query = `SELECT id_usuario, correo, contrasena, roles FROM usuarios WHERE correo = $1`;
       return await this.db.oneOrNone(query, [correo]);
     } catch (error: any) {
       this.logger.error(error)

@@ -1,3 +1,6 @@
 export interface IConsultaCorreoResponse {
-    password: string;
+  id_usuario: number;
+  roles: string;
+  contrasena: string;
+  correo: string;
 }

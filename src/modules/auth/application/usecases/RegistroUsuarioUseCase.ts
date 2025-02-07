@@ -6,7 +6,7 @@ import { ILogger } from "../../../common/domain/repositories/ILogger";
 import { IAuthRepository } from "../../domain/repositories/IAuthRepository";
 import { IRegistroUsuarioDto } from "../dtos/in/IRegistroUsuarioDto";
 import { BadRequestException } from '../../../../infraestructure/common/exceptions/exceptions';
-
+import bcrypt from 'bcrypt'
 @injectable()
 export class RegistroUsuarioUseCase implements IUseCase{
     @inject(AuthTypes.AuthRepository) private _authRepository: IAuthRepository;
@@ -18,6 +18,8 @@ export class RegistroUsuarioUseCase implements IUseCase{
             throw new BadRequestException('El correo del usuario ya se encuentra registrado');
 
         }
+        const salt = await bcrypt.genSalt(10)
+        record.contrasena = await bcrypt.hash(record.contrasena, salt);
         await this._authRepository.registro(record)
     }
 

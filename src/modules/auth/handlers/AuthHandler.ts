@@ -12,3 +12,10 @@ export const registroUsuarioHandler = async (ctx: IContext) => {
   await createCronogramaUseCase.execute(ctx.body);
   return Result.custom(201, false, null)
 };
+
+export const validacionUsuarioHandler = async (ctx: IContext) => {
+  const createCronogramaUseCase = DEPENDENCIES_INJECTION.get<IUseCase>(
+    AuthTypes.ValidarUsuarioUseCase
+  );
+  return await createCronogramaUseCase.execute(ctx.body);
+};

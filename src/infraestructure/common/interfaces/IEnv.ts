@@ -14,4 +14,6 @@ export interface IEnv {
   REDIS_USER: string;
   REDIS_PASSWORD: string;
 
+  SECRET_KEY_JWT: string;
+  EXP_HOURS_JWT: string;
 }

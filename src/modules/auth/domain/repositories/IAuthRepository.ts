@@ -4,7 +4,6 @@ import { IRegistroUsuarioDto } from '../../application/dtos/in/IRegistroUsuarioD
 import { IConsultaCorreoResponse } from "../../application/dtos/out/IConsultaCorreoResponse";
 
 export interface IAuthRepository {
-  login(data: ILoginDto): Promise<ITokenResponse>;
   registro(data: IRegistroUsuarioDto): Promise<void>;
-  consultaCorreo(correo:string): Promise<IConsultaCorreoResponse | null>
+  consultaCorreo(correo: string): Promise<IConsultaCorreoResponse | null>;
 }

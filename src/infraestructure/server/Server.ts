@@ -114,8 +114,12 @@ export class Server implements IServer {
     });
   }
   globarErrorHandler() {
-    return (err: any, req: Request, res: Response, next: NextFunction) => {
-      this.logger.log(`ERROR: ${err.message}`);
+    return (err: any | object, req: Request, res: Response, next: NextFunction) => {
+      this.logger.log(
+        `ERROR: ${
+          err.message ?? typeof err === "object" ? JSON.stringify(err) : err
+        }`
+      );
       if (err && err.error && err.error.isJoi) {
         return res.status(400).json({
           isError: true,

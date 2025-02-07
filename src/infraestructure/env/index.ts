@@ -15,4 +15,6 @@ export const ENV: IEnv = {
   REDIS_PORT: parseInt(process.env.REDIS_PORT ?? "00"),
   REDIS_USER: process.env.REDIS_USER ?? "",
   REDIS_PASSWORD: process.env.REDIS_PASSWORD ?? "",
+  SECRET_KEY_JWT: process.env.SECRET_KEY_JWT ?? "",
+  EXP_HOURS_JWT: process.env.EXP_HOURS_JWT ?? "1",
 };
