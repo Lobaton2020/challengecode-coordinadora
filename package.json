@@ -1,0 +1,56 @@
+{
+  "name": "codechallenge-coordinadora",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.ts --exec ts-node src/index.ts -e ts,graphql,env",
+    "build": "tsc -p .",
+    "start": "node ./dist/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "build:prod": "tsc -p tsconfig.json --outDir dist",
+    "migrate": "ts-node src/infrastructure/bd/migrate.ts",
+    "seed": "ts-node src/infrastructure/bd/seed.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/jest": "^29.5.12",
+    "@types/mocha": "^10.0.6",
+    "@types/swagger-ui-express": "^4.1.7",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "reflect-metadata": "^0.2.1",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "@types/inversify": "^2.0.33",
+    "@types/winston": "^2.4.4",
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-joi-validation": "^6.0.0",
+    "inversify": "^6.0.2",
+    "ioredis": "^5.5.0",
+    "joi": "^17.12.2",
+    "joi-to-swagger": "^6.2.0",
+    "ncp": "^2.0.0",
+    "openapi-types": "^12.1.3",
+    "pg-promise": "^11.10.2",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.11.0"
+  }
+}

@@ -1,0 +1,13 @@
+yarn.lock
+.vscode
+node_modules
+.env
+*.env
+*.log
+logger-Fri-Feb-23-2024.log
+
+dist/
+*.sqlite
+coverage
+.env/
+package-lock.json
