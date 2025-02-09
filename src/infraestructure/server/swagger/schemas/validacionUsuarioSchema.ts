@@ -3,7 +3,7 @@ import { IValidacionUsuarioValidation } from "../../validations/IValidacionUsuar
 import { ERROR_400, ERROR_500, inputSwagger, jsonToSchema } from "../config";
 
 export const validacionUsuarioSchema = {
-  tags: [SwaggerTag.Privado],
+  tags: [SwaggerTag.Autenticacion],
   summary:
     "Valida si un usuario tiene una cuenta creada y retorna un JWT para poder acceder al sistema.",
   body: inputSwagger(IValidacionUsuarioValidation),

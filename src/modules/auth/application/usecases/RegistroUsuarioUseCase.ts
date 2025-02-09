@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import { IUseCase } from "../../../common/domain/repositories/IUseCase";
+import { IUseCase } from "../../../_common/domain/repositories/IUseCase";
 import { AuthTypes } from "../../dependencies/Types";
-import { CommonTypes } from "../../../common/dependencies/Types";
-import { ILogger } from "../../../common/domain/repositories/ILogger";
+import { CommonTypes } from "../../../_common/dependencies/Types";
+import { ILogger } from "../../../_common/domain/repositories/ILogger";
 import { IAuthRepository } from "../../domain/repositories/IAuthRepository";
 import { IRegistroUsuarioDto } from "../dtos/in/IRegistroUsuarioDto";
 import { BadRequestException } from '../../../../infraestructure/common/exceptions/exceptions';

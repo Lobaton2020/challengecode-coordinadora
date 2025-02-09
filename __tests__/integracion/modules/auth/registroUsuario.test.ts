@@ -1,16 +1,18 @@
-import { app as serverApp } from '../mock/app'
+import { app as serverApp } from '../../../mock/app'
 import { Application } from 'express-serve-static-core';
 import request from 'supertest'
-import { Server } from '../../src/infraestructure/server/Server';
-import { creacionMockDb } from '../mock/pg-mem';
-import { CommonTypes } from '../../src/modules/common/dependencies/Types';
-import { DEPENDENCIES_INJECTION } from '../../src/modules/common/dependencies/Dependencies';
+import { Server } from '../../../../src/infraestructure/server/Server';
+import { Roles } from '../../../../src/modules/auth/domain/enum/Roles';
+import { CommonTypes } from '../../../../src/modules/_common/dependencies/Types';
+import { DEPENDENCIES_INJECTION } from '../../../../src/modules/_common/dependencies/Dependencies';
+import { creacionMockDb } from '../../../mock/pg-mem';
 
 describe("Se debe poder registrar un usuario", ()=>{
     let app: Application;
     let prefix: string;
     let server: Server;
-    let db = creacionMockDb();
+    const db = creacionMockDb();
+
     beforeAll(async () => {
         server = serverApp;
         app = server.app
@@ -26,7 +28,7 @@ describe("Se debe poder registrar un usuario", ()=>{
                 nombre,
                 correo,
                 "contrasena": "12345678",
-                "roles": "Admin",
+                "id_rol": Roles.ADMIN,
               })
         const result = await db.one(`SELECT nombre FROM usuarios WHERE correo = $1`, [correo])
         expect(r.status).toBe(201)
@@ -44,21 +46,21 @@ describe("Se debe poder registrar un usuario", ()=>{
                 nombre,
                 correo,
                 "contrasena": "12345678",
-                "roles": "Admin",
+                "id_rol": Roles.ADMIN,
               })
         expect(r.status).toBe(400)
         expect(r.body.is_error).toStrictEqual(true)
     })
 
     it("No debe dejar registrar por que el correo ya esta registrado", async ()=>{
-        const nombre = "Andres Lobatones", correo = "andres@example.com";
+        const nombre = "Andres Lobatones", correo = "andres@gmail.com";
         const r = await request(app)
             .post(`${prefix}/auth/registro`)
             .send({
                 nombre,
                 correo,
                 "contrasena": "12345678",
-                "roles": "Admin",
+                "id_rol": Roles.ADMIN,
               })
         expect(r.status).toBe(400)
         expect(r.body.is_error).toStrictEqual(true)

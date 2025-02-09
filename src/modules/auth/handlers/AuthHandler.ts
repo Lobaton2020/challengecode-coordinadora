@@ -1,7 +1,7 @@
 import "../dependencies/Dependencies";
-import { DEPENDENCIES_INJECTION } from "../../common/dependencies/Dependencies";
-import { IUseCase } from "../../common/domain/repositories/IUseCase";
-import { IContext } from "../../common/domain/repositories/IPayload";
+import { DEPENDENCIES_INJECTION } from "../../_common/dependencies/Dependencies";
+import { IUseCase } from "../../_common/domain/repositories/IUseCase";
+import { IContext } from "../../_common/domain/repositories/IPayload";
 import { AuthTypes } from "../dependencies/Types";
 import { Result } from "../../../infraestructure/server/Result";
 

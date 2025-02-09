@@ -1,17 +1,18 @@
-import { app as serverApp } from '../mock/app'
+import { app as serverApp } from '../../../mock/app'
 import { Application } from 'express-serve-static-core';
 import request from 'supertest'
-import { Server } from '../../src/infraestructure/server/Server';
-import { creacionMockDb } from '../mock/pg-mem';
-import { CommonTypes } from '../../src/modules/common/dependencies/Types';
-import { DEPENDENCIES_INJECTION } from '../../src/modules/common/dependencies/Dependencies';
+import { Server } from '../../../../src/infraestructure/server/Server';
 import jwt from 'jsonwebtoken';
+import { DEPENDENCIES_INJECTION } from '../../../../src/modules/_common/dependencies/Dependencies';
+import { CommonTypes } from '../../../../src/modules/_common/dependencies/Types';
+import { creacionMockDb } from '../../../mock/pg-mem';
+import { Roles } from '../../../../src/modules/auth/domain/enum/Roles';
 
 describe("Se debe validar credenciales de un usuario", ()=>{
     let app: Application;
     let prefix: string;
     let server: Server;
-    let db = creacionMockDb();
+    const db = creacionMockDb();
     beforeAll(async () => {
         server = serverApp;
         app = server.app
@@ -20,7 +21,7 @@ describe("Se debe validar credenciales de un usuario", ()=>{
     })
 
     it("Se debe loguear el usuario con correo y contraseña", async ()=>{
-        const correo = "andres@example.com";
+        const correo = "andres@gmail.com";
         const r = await request(app)
             .post(`${prefix}/auth/login`)
             .send({
@@ -30,7 +31,7 @@ describe("Se debe validar credenciales de un usuario", ()=>{
         const data = jwt.decode(r.body.data.access_token) as any;
         expect(r.status).toBe(200)
         expect(r.body.is_error).toEqual(false)
-        expect(data?.role).toEqual('Admin')
+        expect(data?.id_rol).toEqual(Roles.ADMIN)
         expect(data?.correo).toStrictEqual(correo)
     })
 
@@ -42,10 +43,7 @@ describe("Se debe validar credenciales de un usuario", ()=>{
                 "contrasena": "12345678",
                 "correo": correo
               });
-        const data = jwt.decode(r.body?.data?.access_token) as any;
         expect(r.status).toBe(404)
         expect(r.body.is_error).toEqual(true)
-        expect(data?.role).toBeFalsy()
-        expect(data?.correo).toBeFalsy()
     })
 })

@@ -1,15 +1,15 @@
-import { IModule } from "../common/domain/repositories/IModule";
 import { createValidator } from "express-joi-validation";
-import { IRoute } from "../common/domain/repositories/IRoute";
-import { HttpMethod } from "../common/domain/enum/HttpMethod";
 import {
   registroUsuarioHandler,
   validacionUsuarioHandler,
 } from "./handlers/AuthHandler";
 import { createDependendencies } from "./dependencies/Dependencies";
-import { DEPENDENCIES_INJECTION } from "../common/dependencies/Dependencies";
 import { IRegistroUsuarioValidation } from "../../infraestructure/server/validations/IRegistroUsuarioValidation";
 import { IValidacionUsuarioValidation } from "../../infraestructure/server/validations/IValidacionUsuarioValidation";
+import { DEPENDENCIES_INJECTION } from "../_common/dependencies/Dependencies";
+import { IRoute } from "../_common/domain/repositories/IRoute";
+import { IModule } from "../_common/domain/repositories/IModule";
+import { HttpMethod } from "../_common/domain/enum/HttpMethod";
 
 export class AuthModule implements IModule {
   private validator = createValidator({ passError: true });

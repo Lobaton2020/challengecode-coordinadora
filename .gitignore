@@ -11,3 +11,5 @@ dist/
 coverage
 .env/
 package-lock.json
+.snapshots
+.alpackages

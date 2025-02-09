@@ -1,7 +1,6 @@
-import { Roles } from "../../../domain/enum/Roles";
 import { ILoginDto } from "./ILoginDto";
 
-export interface IRegistroUsuarioDto extends ILoginDto{
-    nombre: string;
-    roles: Roles[]
+export interface IRegistroUsuarioDto extends ILoginDto {
+  nombre: string;
+  id_rol: number;
 }

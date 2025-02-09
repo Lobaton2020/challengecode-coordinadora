@@ -5,6 +5,10 @@
     "emitDecoratorMetadata": true,
     "target": "ES6",
     "module": "commonjs",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["./*"]
+    },
     "lib": ["es5", "dom", "es2015.iterable"],
     "noImplicitAny": true,
     "strictNullChecks": true,

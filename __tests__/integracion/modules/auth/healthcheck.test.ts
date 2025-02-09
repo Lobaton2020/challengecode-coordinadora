@@ -1,14 +1,14 @@
-import { Application } from './../../node_modules/@types/express-serve-static-core/index.d';
-import { bootstrap } from '../../src/app'
+import { app as serverApp } from '../../../mock/app'
+import { Application } from 'express-serve-static-core';
 import request from 'supertest'
-import { Server } from '../../src/infraestructure/server/Server';
+import { Server } from '../../../../src/infraestructure/server/Server';
 
 describe("Test de healthcheck", ()=>{
     let app: Application;
     let prefix: string;
     let server: Server;
     beforeAll(async () => {
-        server = await bootstrap();
+        server = serverApp;
         app = server.app
         prefix = server.prefix;
     })

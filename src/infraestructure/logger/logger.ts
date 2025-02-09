@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { ILogger } from "../../modules/common/domain/repositories/ILogger";
+import { ILogger } from "../../modules/_common/domain/repositories/ILogger";
 import { logger } from "./adapter";
 
 

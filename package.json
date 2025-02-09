@@ -15,8 +15,8 @@
     "build:prod": "tsc -p tsconfig.json --outDir dist",
     "test:unitario": "jest __tests__/unit/",
     "test:integracion": "jest __tests__/integracion/",
-    "migrate": "ts-node src/infrastructure/bd/migrate.ts",
-    "seed": "ts-node src/infrastructure/bd/seed.ts",
+    "db:migrate": "ts-node ./src/infrastructure/bd/migrate.ts",
+    "db:seed": "ts-node ./src/infrastructure/bd/seed.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },
   "keywords": [],

@@ -3,7 +3,7 @@ import { IRegistroUsuarioValidation } from "../../validations/IRegistroUsuarioVa
 import { ERROR_400, ERROR_500, inputSwagger, jsonToSchema } from "../config";
 
 export const registroUsuarioSchema = {
-  tags: [SwaggerTag.Privado],
+  tags: [SwaggerTag.Autenticacion],
   summary: "Crea un nuevo usuario dentro del sistema",
   body: inputSwagger(IRegistroUsuarioValidation),
   response: {

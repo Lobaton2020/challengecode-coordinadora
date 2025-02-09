@@ -1,10 +1,10 @@
 import { Container } from "inversify";
-import { IUseCase } from "../../common/domain/repositories/IUseCase";
-import { AuthTypes } from './Types';
+import { AuthTypes } from "./Types";
 import { RegistroUsuarioUseCase } from "../application/usecases/RegistroUsuarioUseCase";
 import { IAuthRepository } from "../domain/repositories/IAuthRepository";
 import { AuthDao } from "../../../infraestructure/bd/dao/AuthDao";
 import { ValidacionUsuarioUseCase } from "../application/usecases/ValidacionUsuarioUseCase";
+import { IUseCase } from "../../_common/domain/repositories/IUseCase";
 
 export function createDependendencies(DEPENDENCIES_INJECTION: Container) {
   DEPENDENCIES_INJECTION.bind<IUseCase>(AuthTypes.RegistroUsuarioUseCase)
