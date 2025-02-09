@@ -14,6 +14,7 @@ import { IConsultaCorreoResponse } from "../dtos/out/IConsultaCorreoResponse";
 import { ENV } from "../../../../infraestructure/env";
 import { ITokenResponse } from "../dtos/out/ITokenResponse";
 import jwt, { SignOptions } from "jsonwebtoken";
+import { ISessionData } from "../../../_common/domain/dtos/ISessionData";
 
 @injectable()
 export class ValidacionUsuarioUseCase implements IUseCase {
@@ -21,7 +22,7 @@ export class ValidacionUsuarioUseCase implements IUseCase {
   @inject(CommonTypes.Logger) private logger: ILogger;
 
   private generateJwt(usuario: IConsultaCorreoResponse): string {
-    const payload = {
+    const payload:ISessionData = {
       id: usuario.id_usuario,
       id_rol: usuario.id_rol,
       correo: usuario.correo,

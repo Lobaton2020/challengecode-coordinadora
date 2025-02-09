@@ -5,7 +5,10 @@ import { Response as CustomReponse } from "./Result";
 import { DEPENDENCIES_INJECTION } from "../../modules/_common/dependencies/Dependencies";
 import { ILogger } from "../../modules/_common/domain/repositories/ILogger";
 import { CommonTypes } from "../../modules/_common/dependencies/Types";
-import { IContext } from "../../modules/_common/domain/repositories/IPayload";
+import {
+  IContext,
+  IContextMiddeware,
+} from "../../modules/_common/domain/repositories/IPayload";
 import { IModule } from "../../modules/_common/domain/repositories/IModule";
 import { ENV } from "../env";
 import { IServer } from "../../modules/_common/domain/repositories/IServer";
@@ -13,7 +16,6 @@ import { swaggerDocument } from "./swagger/swaggerDocument";
 import { convertFastifySchemaToSwagger } from "./swagger/convertToSwaggerDoc";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-
 
 export class Server implements IServer {
   private logger = DEPENDENCIES_INJECTION.get<ILogger>(CommonTypes.Logger);
@@ -51,13 +53,22 @@ export class Server implements IServer {
           version: "1.0.0",
           description: "API documentation for my microservice",
         },
+        components: {
+          securitySchemes: {
+            BearerAuth: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT",
+            },
+          },
+        },
         paths,
       })
     );
   }
   preHandlerGeneric(callback: Function) {
     return async (
-      req: Request,
+      req: Request & { session: any },
       res: Response,
       next: NextFunction
     ): Promise<void> => {
@@ -67,6 +78,7 @@ export class Server implements IServer {
           params: req.params,
           query: req.query,
           headers: req.headers,
+          session: req.session,
         };
         let calledFn = callback(payload);
         if (calledFn instanceof Promise) {
@@ -95,6 +107,35 @@ export class Server implements IServer {
       }
     };
   }
+  preHandlerMiddleware(callback: Function) {
+    return async (
+      req: Request & { session: any },
+      _: Response,
+      next: NextFunction
+    ): Promise<void> => {
+      try {
+        const payload: IContextMiddeware = {
+          headers: req.headers,
+        };
+        let calledFn = callback(payload);
+        if (calledFn instanceof Promise) {
+          calledFn = await calledFn;
+        }
+        if (calledFn === null || calledFn === undefined) {
+          return next();
+        }
+        if (typeof calledFn === "object") {
+          req.session = calledFn;
+          next();
+          return;
+        }
+        next();
+        return;
+      } catch (err) {
+        next(err);
+      }
+    };
+  }
   addModules(modules: IModule[]): void {
     modules.forEach((_module) => {
       _module.init();
@@ -103,9 +144,13 @@ export class Server implements IServer {
         const { validation, path, method, handler } = route;
         route.validation = Array.isArray(validation) ? validation : [];
         const _path = `${this._prefix}${_module.prefix}${path}`;
+        const middlewares = route.middlewares?.map((handler) =>
+          this.preHandlerMiddleware(handler)
+        );
         router[method.toLowerCase()](
           _path,
           ...route.validation,
+          ...(middlewares ?? []),
           this.preHandlerGeneric(handler)
         );
       });

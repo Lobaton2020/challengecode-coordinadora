@@ -41,6 +41,18 @@ export class BadRequestException extends Exception {
   }
 }
 
+export class UnathorizedException extends Exception {
+  constructor(message: string, cause?: string) {
+    super(message, HttpCode.UNAUTHORIZED, cause);
+  }
+}
+
+export class ForbiddenException extends Exception {
+  constructor(message: string, cause?: string) {
+    super(message, HttpCode.FORBIDDEN, cause);
+  }
+}
+
 export class NotFoundException extends Exception {
   constructor(message: string, cause?: string) {
     super(message, HttpCode.NOT_FOUND, cause);

@@ -5,4 +5,5 @@ export interface IRoute{
     handler: Function,
     method: HttpMethod,
     validation?: any[]
+    middlewares?: Function[]
 }

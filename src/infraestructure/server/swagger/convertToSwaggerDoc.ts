@@ -47,11 +47,16 @@ interface FastifyRoute {
 
 interface FastifySchemas {
   [route: string]: {
-    [method: string]: FastifySchema;
+    [method: string]: {
+      handler: FastifySchema;
+      security?: boolean;
+    };
   };
 }
 
-export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): OpenAPIV3.PathsObject => {
+export const convertFastifySchemaToSwagger = (
+  fastifySchemas: FastifySchemas
+): OpenAPIV3.PathsObject => {
   const paths: OpenAPIV3.PathsObject = {};
 
   Object.keys(fastifySchemas).forEach((route) => {
@@ -59,7 +64,7 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
     const swaggerPath: any = {};
 
     Object.keys(methods).forEach((method) => {
-      const schema = methods[method];
+      const schema = methods[method].handler;
       const responses: OpenAPIV3.ResponsesObject = {};
 
       if (schema.response) {
@@ -68,7 +73,7 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
           responses[statusCode] = {
             description: responseSchema.description,
             content: {
-              'application/json': {
+              "application/json": {
                 schema: {
                   type: responseSchema.type,
                   properties: responseSchema.properties,
@@ -86,7 +91,7 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
         Object.keys(schema.params.properties).forEach((param) => {
           parameters.push({
             name: param,
-            in: 'path',
+            in: "path",
             required: true,
             schema: { type: schema?.params?.properties[param]?.type } as any,
           });
@@ -97,9 +102,11 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
         Object.keys(schema.querystring.properties).forEach((query) => {
           parameters.push({
             name: query,
-            in: 'query',
+            in: "query",
             required: false,
-            schema: { type: schema?.querystring?.properties[query].type } as any,
+            schema: {
+              type: schema?.querystring?.properties[query].type,
+            } as any,
           });
         });
       }
@@ -108,7 +115,7 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
         Object.keys(schema.headers.properties).forEach((header) => {
           parameters.push({
             name: header,
-            in: 'header',
+            in: "header",
             required: false,
             schema: { type: schema?.headers?.properties[header].type } as any,
           });
@@ -117,11 +124,11 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
 
       const requestBody: OpenAPIV3.RequestBodyObject = {
         content: {
-          'application/json': {
-            schema: schema.body || {} as any,
-          }
+          "application/json": {
+            schema: schema.body || ({} as any),
+          },
         },
-        required: schema.body ? true : false
+        required: schema.body ? true : false,
       };
 
       swaggerPath[method.toLowerCase() as keyof OpenAPIV3.PathItemObject] = {
@@ -131,6 +138,7 @@ export const convertFastifySchemaToSwagger = (fastifySchemas: FastifySchemas): O
         parameters: parameters.length > 0 ? parameters : undefined,
         requestBody: schema.body ? requestBody : undefined,
         responses: responses,
+        security: methods[method]?.security ? [{ BearerAuth: [] }] : undefined,
       } as OpenAPIV3.OperationObject;
     });
 

@@ -6,18 +6,30 @@ import { validacionUsuarioSchema } from "./schemas/validacionUsuarioSchema";
 
 export const swaggerDocument: any = {
   "/healthcheck": {
-    GET: healthCheckSchema,
+    GET: {
+      handler: healthCheckSchema,
+    },
   },
   "/auth/registro": {
-    POST: registroUsuarioSchema,
+    POST: {
+      handler: registroUsuarioSchema,
+    },
   },
   "/auth/login": {
-    POST: validacionUsuarioSchema,
+    POST: {
+      handler: validacionUsuarioSchema,
+    },
   },
   "/maestros/tipos-producto": {
-    GET: consultaTiposProductoSchema,
+    GET: {
+      handler: consultaTiposProductoSchema,
+      security: true,
+    },
   },
   "/maestros/roles": {
-    GET: consultaRolesSchema,
+    GET: {
+      handler: consultaRolesSchema,
+      security: true,
+    },
   },
 };
