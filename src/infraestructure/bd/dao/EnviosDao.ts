@@ -45,9 +45,9 @@ export class EnvioDao implements IEnvioRepository {
 
         const [estados, ciudad] = await Promise.all([
             this.db.manyOrNone(queryEstados,[numeroGuia]),
-            this.db.one(queryCiudades,[numeroGuia]),
+            this.db.oneOrNone(queryCiudades,[numeroGuia]),
         ])
-        if(!estados){
+        if(!estados || !ciudad){
             return null;
         }
 
