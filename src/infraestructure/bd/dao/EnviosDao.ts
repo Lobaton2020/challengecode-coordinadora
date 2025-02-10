@@ -9,14 +9,23 @@ import { DbException } from "../../common/exceptions/exceptions";
 import { INSERT_DIRECCIONES, INSERT_ENVIOS, INSERT_ESTADOS, INSERT_PAQUETES } from "../queries/EnviosDaoQuery";
 import { EstadosEnvio } from "../../../modules/envios/domain/enum/EstadosEnvio";
 import { IRastreoGuiaResponse } from "../../../modules/envios/application/dtos/out/IRastreoGuiaResponse";
+import { CacheRepository } from "../../../modules/_common/domain/repositories/CacheRepository";
+import { keyDetalleGuia } from "../../cache/keys";
+import { ENV } from "../../env";
 
 @injectable()
 export class EnvioDao implements IEnvioRepository {
     @inject(CommonTypes.Bd) private db: IDatabase<IMain>;
     @inject(CommonTypes.Logger) private logger: ILogger;
+    @inject(CommonTypes.CacheRepository) private cache: CacheRepository;
 
     async consultaRastreoGuia(numeroGuia: string): Promise<IRastreoGuiaResponse | null> {
         try{
+            const redisKey = keyDetalleGuia(numeroGuia)
+            const cachedData = await this.cache.get<IRastreoGuiaResponse>(redisKey);
+            if (cachedData) {
+            return cachedData;
+            }
             const queryEstados = `SELECT eoe.id_estado_envio as id_estado,
                     ee.nombre,
                     eoe.fecha_creacion
@@ -51,7 +60,7 @@ export class EnvioDao implements IEnvioRepository {
             return null;
         }
 
-        return {
+        const data = {
             destino: {
                 id_ciudad: ciudad.id_ciudad_destino,
                 nombre_ciudad: ciudad.ciudad_destino,
@@ -65,6 +74,8 @@ export class EnvioDao implements IEnvioRepository {
             estado_actual: estados.at(-1),
             estados_historial: estados
         } as IRastreoGuiaResponse
+        await this.cache.setEx(redisKey, 60 * 5, data);
+        return data
         } catch (error: any) {
             this.logger.error(error);
             throw new DbException(
