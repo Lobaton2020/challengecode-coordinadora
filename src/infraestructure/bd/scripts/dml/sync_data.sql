@@ -160,3 +160,81 @@ VALUES
     (1, 'En espera'),
     (2, 'En tránsito'),
     (3, 'Entregado');
+-- Test case HU4
+INSERT INTO
+    direcciones (id_tipo_via, via, numero, detalle, id_ciudad)
+VALUES
+    (5, '21', '01', 'Zona industrial', 6),
+    (
+        5,
+        '26d',
+        '32',
+        'Cerca del parque la floresta',
+        7
+    );
+
+INSERT INTO
+    paquetes (
+        id_paquete,
+        id_tipo_producto,
+        numero_guia,
+        peso_g,
+        alto_cm,
+        ancho_cm,
+        largo_cm,
+        contenido,
+        es_fragil
+    )
+VALUES
+    (
+        100,
+        8,
+        '51060507701',
+        250,
+        30,
+        10,
+        20,
+        'Plancha de cabello para risos',
+        false
+    );
+
+INSERT INTO
+    orden_envios (
+        id_orden_envio,
+        id_usuario_creador,
+        id_paquete,
+        id_direccion_destino,
+        id_direccion_remitente
+    )
+VALUES
+    (100, 1, 100, 2, 1);
+
+INSERT INTO
+    estados_orden_envios (
+        id_orden_envio,
+        fecha_creacion,
+        id_estado_envio,
+        anotaciones
+    )
+VALUES
+    (
+        100,
+        '2025-02-09 21:11:32.857',
+        1,
+        'Inicia proceso envio'
+    );
+
+INSERT INTO
+    estados_orden_envios (
+        id_orden_envio,
+        fecha_creacion,
+        id_estado_envio,
+        anotaciones
+    )
+VALUES
+    (
+        100,
+        '2025-02-09 21:12:28.648',
+        2,
+        'Se lo llevo el carro'
+    );

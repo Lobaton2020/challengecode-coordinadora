@@ -1,4 +1,5 @@
 import { consultaCiudadesSchema } from "./schemas/consultaCiudadesSchema";
+import { consultaGuiaRastreoSchema } from "./schemas/consultaGuiaRastreoSchema";
 import { consultaRolesSchema } from "./schemas/consultaRolesSchema";
 import { consultaTiposProductoSchema } from "./schemas/consultaTiposProductoSchema";
 import { consultaTiposViaSchema } from "./schemas/consultaTiposViaSchema";
@@ -54,5 +55,10 @@ export const swaggerDocument: any = {
       security: true,
     },
   },
-
+  "/envios/rastreo/{numero_guia}": {
+    GET: {
+      handler: consultaGuiaRastreoSchema,
+      security: true,
+    },
+  }
 };

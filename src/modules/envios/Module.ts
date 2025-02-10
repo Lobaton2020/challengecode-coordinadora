@@ -1,5 +1,6 @@
 import { createDependendencies } from "./dependencies/Dependencies";
 import {
+  consultaRastreoGuiaHandler,
   crearEnvioHandler,
 } from "./handlers/EnviosHandler";
 import { DEPENDENCIES_INJECTION } from "../_common/dependencies/Dependencies";
@@ -11,6 +12,7 @@ import { autorizacionMiddleware } from "../_common/middlewares/autorizacionMidle
 import { Roles } from "../auth/domain/enum/Roles";
 import { createValidator } from "express-joi-validation";
 import { ICrearEnvioValidation } from "../../infraestructure/server/validations/ICrearEnvioValidation";
+import { IRastreoGuiaValidation } from "../../infraestructure/server/validations/IRastreoGuiaValidation";
 
 export class EnviosModule implements IModule {
   private validator = createValidator({ passError: true });
@@ -30,6 +32,18 @@ export class EnviosModule implements IModule {
         ],
         validation:[
           this.validator.body(ICrearEnvioValidation)
+        ]
+      },
+      {
+        method: HttpMethod.GET,
+        handler: consultaRastreoGuiaHandler,
+        path: "/rastreo/:numero_guia",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.CLIENTE, Roles.ADMIN, Roles.BACKOFFOCE])
+        ],
+        validation:[
+          this.validator.params(IRastreoGuiaValidation)
         ]
       },
     ];

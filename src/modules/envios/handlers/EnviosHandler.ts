@@ -13,3 +13,10 @@ export const crearEnvioHandler = async (ctx: IContext) => {
   const data = await usecase.execute(ctx.session, ctx.body);
   return Result.custom(HttpCode.CREATED, false, data);
 };
+
+export const consultaRastreoGuiaHandler = async (ctx: IContext) => {
+  const usecase = DEPENDENCIES_INJECTION.get<IUseCase>(
+    EnvioTypes.ConsultaRastreoGuiaUseCase
+  );
+  return Result.ok(await usecase.execute(ctx.params));
+};
