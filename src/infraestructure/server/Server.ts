@@ -167,7 +167,9 @@ export class Server implements IServer {
     ) => {
       this.logger.log(
         `ERROR: ${
-          err.message ?? typeof err === "object" ? JSON.stringify(err) : err
+          err.message ?? typeof err === "object"
+            ? JSON.stringify(err)
+            : `${err.message}`
         }`
       );
       if (err && err.error && err.error.isJoi) {

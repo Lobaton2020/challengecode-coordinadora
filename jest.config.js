@@ -12,7 +12,7 @@ module.exports = {
   ],
   coverageProvider: "v8",
   testMatch: [
-    "**/__tests__/**/*.[jt]s?(x)",
+    "**/__tests__/**/*test.[jt]s?(x)",
     "**/?(*.)+(spec|test).[tj]s?(x)"
   ],
 };

@@ -6,11 +6,9 @@ import { CommonTypes } from '../../../../src/modules/_common/dependencies/Types'
 import { DEPENDENCIES_INJECTION } from '../../../../src/modules/_common/dependencies/Dependencies';
 import { creacionMockDb } from '../../../mock/pg-mem';
 import { AuthTypes } from "../../../../src/modules/auth/dependencies/Types";
-import { IUseCase } from "../../../../src/modules/_common/domain/repositories/IUseCase";
-import { ValidacionUsuarioUseCase } from "../../../../src/modules/auth/application/usecases/ValidacionUsuarioUseCase";
 import { credentials } from "../../../mock/config";
-
-describe("Se debe consultar los roles del maestro", () => {
+import { ValidacionUsuarioUseCase } from "../../../../src/modules/auth/application/usecases/ValidacionUsuarioUseCase";
+describe("Se debe consultar los tipos de via del maestro", () => {
   let app: Application;
   let prefix: string;
   let server: Server;
@@ -28,13 +26,15 @@ describe("Se debe consultar los roles del maestro", () => {
     token = r.access_token;
   });
 
-  it("Se debe consultar los roles del maestro segun BD", async () => {
+  it("Se debe consultar los tipos de via del maestro segun BD", async () => {
     const r = await request(app)
-      .get(`${prefix}/maestros/roles`)
+      .get(`${prefix}/maestros/tipos-via`)
       .set({
         Authorization: `Bearer ${token}`,
       });
-    const { count } = await db.one(`SELECT count(*) as count FROM roles`);
+    const { count } = await db.one(
+      `SELECT count(*) as count FROM tipos_via`
+    );
     expect(r.status).toBe(200);
     expect(r.body.data.length).toEqual(count);
     expect(r.body.is_error).toStrictEqual(false);

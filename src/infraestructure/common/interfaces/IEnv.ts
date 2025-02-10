@@ -16,4 +16,5 @@ export interface IEnv {
 
   SECRET_KEY_JWT: string;
   EXP_HOURS_JWT: string;
+  EXP_HOURS_CACHE_MAESTROS: number;
 }

@@ -17,4 +17,7 @@ export const ENV: IEnv = {
   REDIS_PASSWORD: process.env.REDIS_PASSWORD ?? "",
   SECRET_KEY_JWT: process.env.SECRET_KEY_JWT ?? "",
   EXP_HOURS_JWT: process.env.EXP_HOURS_JWT ?? "1",
+  EXP_HOURS_CACHE_MAESTROS: parseInt(
+    process.env.EXP_HOURS_CACHE_MAESTROS ?? "24"
+  )*60*60,
 };

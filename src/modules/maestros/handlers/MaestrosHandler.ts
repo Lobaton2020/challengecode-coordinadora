@@ -15,7 +15,21 @@ export const consultaRolesHandler = async (_: IContext) => {
 
 export const consultaTiposPrductoHandler = async (_: IContext) => {
   const usecase = DEPENDENCIES_INJECTION.get<IUseCase>(
-    MaestrosTypes.ConsultaTiposProducto
+    MaestrosTypes.ConsultaTiposProductoUseCase
+  );
+  return Result.ok(await usecase.execute());
+};
+
+export const consultaTiposViaHandler = async (_: IContext) => {
+  const usecase = DEPENDENCIES_INJECTION.get<IUseCase>(
+    MaestrosTypes.ConsultaTiposProductoUseCase
+  );
+  return Result.ok(await usecase.execute());
+};
+
+export const consultaCiudadesHandler = async (_: IContext) => {
+  const usecase = DEPENDENCIES_INJECTION.get<IUseCase>(
+    MaestrosTypes.ConsultaCiudadesUseCase
   );
   return Result.ok(await usecase.execute());
 };

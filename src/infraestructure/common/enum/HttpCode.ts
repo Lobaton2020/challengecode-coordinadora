@@ -3,6 +3,7 @@ export enum HttpCode {
   NOT_FOUND = 404,
   SERVER_ERROR = 500,
   OK = 200,
+  CREATED = 201,
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
 };

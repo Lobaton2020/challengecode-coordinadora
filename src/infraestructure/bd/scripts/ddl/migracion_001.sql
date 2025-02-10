@@ -28,7 +28,7 @@ CREATE TABLE paquetes (
     id_paquete SERIAL PRIMARY KEY,
     id_tipo_producto INT NOT NULL,
     numero_guia VARCHAR(255) UNIQUE NOT NULL,
-    peso_kg INT NOT NULL,
+    peso_g INT NOT NULL,
     alto_cm INT NOT NULL,
     ancho_cm INT NOT NULL,
     largo_cm INT NOT NULL,
@@ -55,3 +55,89 @@ CREATE TABLE estados_orden_envios (
     descripcion TEXT NULL,
     FOREIGN KEY (id_orden_envio) REFERENCES orden_envios(id_orden_envio)
 );
+-- Script ajustes para coreccion
+CREATE TABLE tipos_via (
+    id_tipo_via SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    esta_activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE direcciones (
+    id_direccion SERIAL PRIMARY KEY,
+    id_tipo_via INT NOT NULL,
+    via VARCHAR(255) NOT NULL,
+    numero VARCHAR(255) NOT NULL,
+    detalle VARCHAR(255),
+    FOREIGN KEY (id_tipo_via) REFERENCES tipos_via(id_tipo_via)
+);
+
+ALTER TABLE
+    orden_envios
+ADD
+    COLUMN id_direccion_destino INT;
+
+ALTER TABLE
+    orden_envios
+ADD
+    COLUMN id_direccion_remitente INT;
+
+ALTER TABLE
+    orden_envios
+ADD
+    CONSTRAINT fk_direccion_destino FOREIGN KEY (id_direccion_destino) REFERENCES direcciones(id_direccion);
+
+ALTER TABLE
+    orden_envios
+ADD
+    CONSTRAINT fk_direccion_remitente FOREIGN KEY (id_direccion_remitente) REFERENCES direcciones(id_direccion);
+
+ALTER TABLE
+    orden_envios DROP COLUMN direccion_destino;
+
+ALTER TABLE
+    orden_envios DROP COLUMN direccion_remitente;
+
+-- Ajustes ciudades y departamento
+CREATE TABLE departamentos (
+    id_departamento SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    esta_activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    abreviado VARCHAR(255)
+);
+
+CREATE TABLE ciudades (
+    id_ciudad SERIAL PRIMARY KEY,
+    id_departamento INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    esta_activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_departamento) REFERENCES departamentos(id_departamento) ON DELETE CASCADE
+);
+
+ALTER TABLE
+    direcciones
+ADD
+    COLUMN id_ciudad INT;
+
+ALTER TABLE
+    direcciones
+ADD
+    CONSTRAINT fk_ciudad FOREIGN KEY (id_ciudad) REFERENCES ciudades(id_ciudad);
+
+CREATE TABLE estados_envios (
+    id_estado_envio SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    esta_activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE
+    estados_orden_envios
+    DROP COLUMN IF EXISTS nombre,
+    DROP COLUMN IF EXISTS descripcion,
+    ADD COLUMN id_estado_envio INT NOT NULL,
+    ADD COLUMN anotaciones TEXT NULL,
+    ADD
+        CONSTRAINT fk_estado_envio FOREIGN KEY (id_estado_envio) REFERENCES    estados_envios(id_estado_envio);

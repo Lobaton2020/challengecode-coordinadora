@@ -5,12 +5,11 @@ import { IRegistroUsuarioDto } from "../../../modules/auth/application/dtos/in/I
 import { IConsultaCorreoResponse } from "../../../modules/auth/application/dtos/out/IConsultaCorreoResponse";
 import { CommonTypes } from "../../../modules/_common/dependencies/Types";
 import { ILogger } from "../../../modules/_common/domain/repositories/ILogger";
-import { DEPENDENCIES_INJECTION } from "../../../modules/_common/dependencies/Dependencies";
 import { DbException } from "../../common/exceptions/exceptions";
 
 @injectable()
 export class AuthDao implements IAuthRepository {
-  private db = DEPENDENCIES_INJECTION.get<IDatabase<IMain>>(CommonTypes.Bd);
+  @inject(CommonTypes.Bd) private db: IDatabase<IMain>;
   @inject(CommonTypes.Logger) private logger: ILogger;
 
   async registro(data: IRegistroUsuarioDto): Promise<void> {

@@ -6,11 +6,9 @@ import { CommonTypes } from '../../../../src/modules/_common/dependencies/Types'
 import { DEPENDENCIES_INJECTION } from '../../../../src/modules/_common/dependencies/Dependencies';
 import { creacionMockDb } from '../../../mock/pg-mem';
 import { AuthTypes } from "../../../../src/modules/auth/dependencies/Types";
-import { IUseCase } from "../../../../src/modules/_common/domain/repositories/IUseCase";
-import { ValidacionUsuarioUseCase } from "../../../../src/modules/auth/application/usecases/ValidacionUsuarioUseCase";
 import { credentials } from "../../../mock/config";
-
-describe("Se debe consultar los roles del maestro", () => {
+import { ValidacionUsuarioUseCase } from "../../../../src/modules/auth/application/usecases/ValidacionUsuarioUseCase";
+describe("Se debe consultar las ciudades maestro", () => {
   let app: Application;
   let prefix: string;
   let server: Server;
@@ -28,15 +26,26 @@ describe("Se debe consultar los roles del maestro", () => {
     token = r.access_token;
   });
 
-  it("Se debe consultar los roles del maestro segun BD", async () => {
+  it("Se debe consulta las ciudades del maestro segun BD", async () => {
     const r = await request(app)
-      .get(`${prefix}/maestros/roles`)
+      .get(`${prefix}/maestros/ciudades`)
       .set({
         Authorization: `Bearer ${token}`,
       });
-    const { count } = await db.one(`SELECT count(*) as count FROM roles`);
-    expect(r.status).toBe(200);
-    expect(r.body.data.length).toEqual(count);
-    expect(r.body.is_error).toStrictEqual(false);
+      const { count } = await db.one(
+        `SELECT count(*) as count FROM ciudades c INNER JOIN departamentos d on d.id_departamento = c.id_departamento`
+      );
+      expect(r.status).toBe(200);
+      expect(r.body.data.length).toEqual(count);
+      expect(r.body.is_error).toStrictEqual(false);
+      r.body.data.forEach((ciudad: any) => {
+        expect(ciudad).toEqual(expect.objectContaining({
+          id: expect.anything(),
+          nombre: expect.anything(),
+          nombre_departamento: expect.anything(),
+          abreviado_departamento: expect.anything(),
+          esta_activo: expect.anything()
+        }))
+      });
   });
 });

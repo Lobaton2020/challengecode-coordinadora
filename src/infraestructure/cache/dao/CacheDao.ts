@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
 import { Redis } from "ioredis";
-import { CommonTypes } from "../../../modules/common/dependencies/Types";
-import { CacheRepository } from "../../../modules/_common/domain/repositories/CacheRepository";
-import { DEPENDENCIES_INJECTION } from "../../../modules/common/dependencies/Dependencies";
 import { CacheException } from "../../common/exceptions/exceptions";
+import { CacheRepository } from "../../../modules/_common/domain/repositories/CacheRepository";
+import { DEPENDENCIES_INJECTION } from "../../../modules/_common/dependencies/Dependencies";
+import { CommonTypes } from "../../../modules/_common/dependencies/Types";
 
 @injectable()
 export class CacheDao implements CacheRepository

@@ -4,4 +4,5 @@ export enum SwaggerTag {
   Privado = "Privado",
   Autenticacion = "Autenticacion",
   Maestros = "Maestros",
+  Envios = "Envios"
 }
