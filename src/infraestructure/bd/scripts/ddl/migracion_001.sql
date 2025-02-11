@@ -211,3 +211,10 @@ ALTER TABLE
     jornadas
 ADD
     COLUMN id_ruta INT REFERENCES rutas(id_ruta);
+
+-- Optmizacion para consultas con indices
+
+CREATE INDEX idx_orden_envio ON estados_orden_envios(id_orden_envio);
+CREATE INDEX idx_transportista_jornada ON transportistas_jornada_orden_envio(id_transportista_jornada);
+CREATE INDEX idx_paquete ON paquetes(id_paquete);
+CREATE INDEX idx_ruta ON rutas(id_ruta);

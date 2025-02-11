@@ -5,5 +5,6 @@ export const EnvioTypes = {
   CrearEnvioUseCase: Symbol.for("CrearEnvioUseCase"),
   AsignarEnvioUseCase: Symbol.for("AsignarEnvioUseCase"),
   ConsultaRastreoGuiaUseCase: Symbol.for("ConsultaRastreoGuiaUseCase"),
+  ConsultaEnviosUseCase: Symbol.for("ConsultaEnviosUseCase"),
   EnvioRepository: Symbol.for("EnvioRepository"),
 };

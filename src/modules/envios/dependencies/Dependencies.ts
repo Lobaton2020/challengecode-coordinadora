@@ -9,6 +9,7 @@ import { ConsultaTransportistasUseCase } from "../application/usecases/ConsultaT
 import { ConsultaJornadaGuiaUseCase } from "../application/usecases/ConsultaJornadaGuiaUseCase";
 import { ConsultaVehiculosUseCase } from "../application/usecases/ConsultaVehiculosUseCase";
 import { AsignarEnvioUseCase } from "../application/usecases/AsignarEnvioUseCase";
+import { ConsultaEnviosUseCase } from "../application/usecases/ConsultaEnviosUseCase";
 
 export function createDependendencies(DEPENDENCIES_INJECTION: Container) {
   DEPENDENCIES_INJECTION.bind<IUseCase>(EnvioTypes.CrearEnvioUseCase)
@@ -38,6 +39,9 @@ export function createDependendencies(DEPENDENCIES_INJECTION: Container) {
   .to(AsignarEnvioUseCase)
   .inSingletonScope();
 
+  DEPENDENCIES_INJECTION.bind<IUseCase>(EnvioTypes.ConsultaEnviosUseCase)
+    .to(ConsultaEnviosUseCase)
+    .inSingletonScope();
 
   DEPENDENCIES_INJECTION.bind<IEnvioRepository>(
     EnvioTypes.EnvioRepository

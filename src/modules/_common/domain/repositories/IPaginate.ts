@@ -1,4 +1,4 @@
-export interface IPaginate{
-    limit: number,
-    offset: number
+export interface IPaginate<T> {
+    data: T[],
+    count: number,
 }

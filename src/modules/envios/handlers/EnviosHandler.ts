@@ -56,5 +56,12 @@ export const consultaTransportistasDisponiblesHandler = async (ctx: IContext) =>
   return Result.ok(await usecase.execute(ctx.params));
 };
 
+export const consultarOrdenesEnvios = async (ctx: IContext) => {
+  const usecase = DEPENDENCIES_INJECTION.get<IUseCase>(
+    EnvioTypes.ConsultaEnviosUseCase
+  );
+  return Result.ok(await usecase.execute(ctx.query));
+};
+
 
 

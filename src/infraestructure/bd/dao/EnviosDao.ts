@@ -1,12 +1,12 @@
 import { inject, injectable } from "inversify";
-import { IDatabase, IMain } from "pg-promise";
+import pgPromise, { IDatabase, IMain } from "pg-promise";
 import { CommonTypes } from "../../../modules/_common/dependencies/Types";
 import { ILogger } from "../../../modules/_common/domain/repositories/ILogger";
 import { IEnvioRepository } from "../../../modules/envios/domain/repositories/IEnvioRepository";
 import { ICrearEnvioDto } from "../../../modules/envios/application/dtos/in/ICrearEnvioDto";
 import { ICrearEnvioResponse } from "../../../modules/envios/application/dtos/out/ICrearEnvioResponse";
 import { DbException } from "../../common/exceptions/exceptions";
-import { CONSULTA_JORNADAS_DISPONIBLES_ASIGANCION_ENVIO, CONSULTA_TRASNPORTISTAS_ACTIVOS, CONSULTA_VEHICULOS_DISPONIBLES, INSERT_DIRECCIONES, INSERT_ENVIOS, INSERT_ESTADOS, INSERT_PAQUETES, INSERT_TRANSPORTISTA_JORNADA, INSERT_TRANSPORTISTA_JORNADA_ENVIOS } from "../queries/EnviosDaoQuery";
+import { CONSULTA_JORNADAS_DISPONIBLES_ASIGANCION_ENVIO, CONSULTA_TRASNPORTISTAS_ACTIVOS, CONSULTA_VEHICULOS_DISPONIBLES, INSERT_DIRECCIONES, INSERT_ENVIOS, INSERT_ESTADOS, INSERT_PAQUETES, INSERT_TRANSPORTISTA_JORNADA, INSERT_TRANSPORTISTA_JORNADA_ENVIOS, QUERY_LISTA_ORDENES_ENVIO, QUERY_LISTA_ORDENES_ENVIO_COUNT } from "../queries/EnviosDaoQuery";
 import { EstadosEnvio } from "../../../modules/envios/domain/enum/EstadosEnvio";
 import { IRastreoGuiaResponse } from "../../../modules/envios/application/dtos/out/IRastreoGuiaResponse";
 import { CacheRepository } from "../../../modules/_common/domain/repositories/CacheRepository";
@@ -16,12 +16,86 @@ import { IConsultaJonadaGuiaResponse } from "../../../modules/envios/application
 import { IConsultaVehiculosResponse } from "../../../modules/envios/application/dtos/out/IConsultaVehiculosResponse";
 import { IAsignarEnvioDto } from "../../../modules/envios/application/dtos/in/IAsignarEnvioDto";
 import { ICapacidadPaqueteDto } from "../../../modules/envios/application/dtos/in/ICapacidadPaqueteDto";
+import { IConsultarOrdenesEnvioDto } from "../../../modules/envios/application/dtos/in/IConsultarOrdenesEnvioDto";
+import { IConsultaEnviosResponse } from "../../../modules/envios/application/dtos/out/IConsultaEnviosResponse";
 
 @injectable()
 export class EnvioDao implements IEnvioRepository {
     @inject(CommonTypes.Logger) private logger: ILogger;
     @inject(CommonTypes.CacheRepository) private cache: CacheRepository;
     @inject(CommonTypes.Bd) private db: IDatabase<IMain>;
+
+    private aplicarFiltros(stringInicial: string, filtros: IConsultarOrdenesEnvioDto) {
+        let query = stringInicial;
+        const params: Record<string, string | number> = {};
+        if (filtros.numero_guia) {
+            query += ` AND p.numero_guia ILIKE $/numero_guia/`;
+            params.numero_guia = `${filtros.numero_guia}%`;
+        }
+
+        if (filtros.id_estado_envio) {
+            query += ` AND eoe.id_estado_envio = $/id_estado_envio/`;
+            params.id_estado_envio = filtros.id_estado_envio;
+        }
+
+        if (filtros.id_transportista) {
+            query += ` AND t.id_transportista = $/id_transportista/`;
+            params.id_transportista = filtros.id_transportista;
+        }
+
+        if (filtros.fecha_estado) {
+            const fechas = filtros.fecha_estado.split(",");
+            query += ` AND eoe.fecha_creacion BETWEEN $/fecha_inicio/ AND $/fecha_fin/`;
+            params.fecha_inicio = fechas[0];
+            params.fecha_fin = fechas[1];
+        }
+        return { query, params }
+    }
+
+    async consultarOrdenesEnvio(filtros: IConsultarOrdenesEnvioDto): Promise<IConsultaEnviosResponse[]> {
+        const keyRedis = new URLSearchParams(filtros as any).toString() + '&data=true'
+        const cachedData = await this.cache.get<IConsultaEnviosResponse[]>(keyRedis)
+        if (cachedData) {
+            return cachedData;
+        }
+        try {
+            const params: Record<string, string | number> = {};
+            const { query: q, params: p } = this.aplicarFiltros(QUERY_LISTA_ORDENES_ENVIO, filtros)
+            let query = q
+            query += ` ORDER BY oe.id_orden_envio, eoe.fecha_creacion DESC`;
+            query += ` LIMIT $/cantidad_pagina/ OFFSET $/offset/`
+            params.cantidad_pagina = filtros.cantidad_pagina;
+            params.offset = (filtros.pagina - 1) * params.cantidad_pagina;
+            const data = await this.db.query(query, { ...params, ...p })
+            await this.cache.setEx(keyRedis, 60, data)
+            return data;
+        } catch (error) {
+            throw new DbException(
+                "Error al realizar lista de ordenes de envio",
+                error.message
+            );
+        }
+    }
+    async consultarOrdenesEnvioCount(filtros: IConsultarOrdenesEnvioDto): Promise<number> {
+        const keyRedis = new URLSearchParams(filtros as any).toString() + '&count=true'
+        const cachedData = await this.cache.get<number>(keyRedis)
+        if (cachedData) {
+            return cachedData;
+        }
+        try {
+            const { query: q, params } = this.aplicarFiltros('', filtros)
+            const query = QUERY_LISTA_ORDENES_ENVIO_COUNT.replace(":resto_condiciones:", q)
+            const { count } = await this.db.one(query, { ...params })
+            await this.cache.setEx(keyRedis, 60, parseInt(count))
+            return parseInt(count);
+        } catch (error) {
+            this.logger.error(error);
+            throw new DbException(
+                "Error al realizar lista de ordenes de envio coun",
+                error.message
+            );
+        }
+    }
 
     async asignarEnvio(data: IAsignarEnvioDto): Promise<void> {
         await this.db.tx(async (t) => {

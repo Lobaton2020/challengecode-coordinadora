@@ -2,6 +2,7 @@ import { asignarEnvioSchema } from "./schemas/asignarEnvioSchema";
 import { consultaCiudadesSchema } from "./schemas/consultaCiudadesSchema";
 import { consultaGuiaRastreoSchema } from "./schemas/consultaGuiaRastreoSchema";
 import { consultaJornadaGuiaSchema } from "./schemas/consultaJornadaGuiaSchema";
+import { consultarEnviosSchema } from "./schemas/consultarEnviosSchema";
 import { consultaRolesSchema } from "./schemas/consultaRolesSchema";
 import { consultaTiposProductoSchema } from "./schemas/consultaTiposProductoSchema";
 import { consultaTiposViaSchema } from "./schemas/consultaTiposViaSchema";
@@ -54,6 +55,10 @@ export const swaggerDocument: any = {
     },
   },
   "/envios": {
+    GET: {
+      security: true,
+      handler: consultarEnviosSchema
+    },
     POST: {
       handler: crearEnvioViaSchema,
       security: true,
@@ -89,5 +94,6 @@ export const swaggerDocument: any = {
       security: true,
     },
   }
+
 
 };

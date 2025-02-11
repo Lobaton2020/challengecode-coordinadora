@@ -2,6 +2,7 @@ import { createDependendencies } from "./dependencies/Dependencies";
 import {
   asignarEnvioHandler,
   consultaRastreoGuiaHandler,
+  consultarOrdenesEnvios,
   consultaRutaJornadaGuiaHandler,
   consultaTransportistasDisponiblesHandler,
   consultaVehiculosDisponiblesHandler,
@@ -19,6 +20,7 @@ import { ICrearEnvioValidation } from "../../infraestructure/server/validations/
 import { IRastreoGuiaValidation } from "../../infraestructure/server/validations/IRastreoGuiaValidation";
 import { IRutaGuiaValidation } from "../../infraestructure/server/validations/IRutaGuiaValidation";
 import { IAsignarEnvioValidation } from "../../infraestructure/server/validations/IAsignarEnvioValidation";
+import { IConsultaOrdenesEnvioValidation } from "../../infraestructure/server/validations/IConsultaOrdenesEnvioValidation";
 
 export class EnviosModule implements IModule {
   private validator = createValidator({ passError: true });
@@ -95,6 +97,18 @@ export class EnviosModule implements IModule {
         ],
         validation:[
           this.validator.body(IAsignarEnvioValidation)
+        ]
+      },
+      {
+        method: HttpMethod.GET,
+        handler: consultarOrdenesEnvios,
+        path: "/",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.ADMIN])
+        ],
+        validation: [
+          this.validator.query(IConsultaOrdenesEnvioValidation)
         ]
       },
     ];

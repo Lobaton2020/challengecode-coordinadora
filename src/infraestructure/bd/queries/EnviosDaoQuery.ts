@@ -122,3 +122,78 @@ export const INSERT_TRANSPORTISTA_JORNADA_ENVIOS = `INSERT INTO transportistas_j
         $/id_transportista_jornada/
     );
     `;
+
+export const QUERY_LISTA_ORDENES_ENVIO = `SELECT DISTINCT ON (oe.id_orden_envio)
+                oe.id_orden_envio,
+                p.numero_guia,
+                tp.nombre AS tipo_producto,
+                p.peso_g,
+                eoe.id_estado_envio,
+                ee.nombre AS estado_envio,
+                eoe.fecha_creacion AS fecha_estado,
+                u.id_usuario AS id_creador,
+                u.nombre AS creador,
+                t.id_transportista,
+                u_t.nombre AS transportista,
+                v.placa AS vehiculo,
+                j.fecha AS fecha_jornada,
+                j.hora_inicio,
+                j.hora_fin,
+                r.id_ruta,
+                r.nombre AS ruta,
+                r.tiempo_entrega_estimado_horas
+            FROM orden_envios oe
+            JOIN paquetes p ON oe.id_paquete = p.id_paquete
+            JOIN tipos_producto tp ON p.id_tipo_producto = tp.id_tipo_producto
+            JOIN estados_orden_envios eoe ON oe.id_orden_envio = eoe.id_orden_envio
+            JOIN estados_envios ee ON eoe.id_estado_envio = ee.id_estado_envio
+            JOIN usuarios u ON oe.id_usuario_creador = u.id_usuario
+            LEFT JOIN transportistas_jornada_orden_envio tjo ON oe.id_orden_envio = tjo.id_orden_envio
+            LEFT JOIN transportistas_jornada tj ON tjo.id_transportista_jornada = tj.id_transportista_jornada
+            LEFT JOIN transportistas t ON tj.id_transportista = t.id_transportista
+            LEFT JOIN usuarios u_t ON t.id_usuario = u_t.id_usuario
+            LEFT JOIN vehiculos v ON tj.id_vehiculo = v.id_vehiculo
+            LEFT JOIN jornadas j ON tj.id_jornada = j.id_jornada
+            LEFT JOIN rutas r ON j.id_ruta = r.id_ruta
+            WHERE 1=1
+`;
+
+export const QUERY_LISTA_ORDENES_ENVIO_COUNT = `--sql
+    WITH lista_data AS (
+    SELECT
+        DISTINCT ON(eoe.id_orden_envio)
+        oe.id_orden_envio,
+        p.numero_guia,
+        tp.nombre AS tipo_producto,
+        p.peso_g,
+        eoe.id_estado_envio,
+        ee.nombre AS estado_envio,
+        eoe.fecha_creacion AS fecha_estado,
+        u.id_usuario AS id_creador,
+        u.nombre AS creador,
+        t.id_transportista,
+        u_t.nombre AS transportista,
+        v.placa AS vehiculo,
+        j.fecha AS fecha_jornada,
+        j.hora_inicio,
+        j.hora_fin,
+        r.id_ruta,
+        r.nombre AS ruta,
+        r.tiempo_entrega_estimado_horas
+    FROM orden_envios oe
+    JOIN paquetes p ON oe.id_paquete = p.id_paquete
+    JOIN tipos_producto tp ON p.id_tipo_producto = tp.id_tipo_producto
+    JOIN estados_orden_envios eoe ON oe.id_orden_envio = eoe.id_orden_envio
+    JOIN estados_envios ee ON eoe.id_estado_envio = ee.id_estado_envio
+    JOIN usuarios u ON oe.id_usuario_creador = u.id_usuario
+    LEFT JOIN transportistas_jornada_orden_envio tjo ON oe.id_orden_envio = tjo.id_orden_envio
+    LEFT JOIN transportistas_jornada tj ON tjo.id_transportista_jornada = tj.id_transportista_jornada
+    LEFT JOIN transportistas t ON tj.id_transportista = t.id_transportista
+    LEFT JOIN usuarios u_t ON t.id_usuario = u_t.id_usuario
+    LEFT JOIN vehiculos v ON tj.id_vehiculo = v.id_vehiculo
+    LEFT JOIN jornadas j ON tj.id_jornada = j.id_jornada
+    LEFT JOIN rutas r ON j.id_ruta = r.id_ruta
+    WHERE 1=1 :resto_condiciones:
+    ORDER by eoe.id_orden_envio, eoe.fecha_creacion DESC
+    )
+    select COUNT(*) from lista_data`;
