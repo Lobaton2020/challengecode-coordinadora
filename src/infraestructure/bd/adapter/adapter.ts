@@ -13,7 +13,7 @@ const config: IConnectionParameters = {
   connectionTimeoutMillis: 2000,
   query_timeout: 1000,
   //TODO: Validar esta parte de seguridad
-  ssl: ['postgres','localhost'].includes(ENV.PG_HOST) ? false: { rejectUnauthorized: false },
+  ssl: ['postgres', 'localhost', '34.58.195.97'].includes(ENV.PG_HOST) ? false : { rejectUnauthorized: false },
 };
 const pgp: IMain = pgPromise({});
 export const db = pgp(config) as IDatabase<IMain>;
