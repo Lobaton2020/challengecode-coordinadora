@@ -141,3 +141,73 @@ ALTER TABLE
     ADD COLUMN anotaciones TEXT NULL,
     ADD
         CONSTRAINT fk_estado_envio FOREIGN KEY (id_estado_envio) REFERENCES    estados_envios(id_estado_envio);
+
+-- Modulo de asigancion de transportista
+CREATE TABLE tipo_vehiculos (
+    id_tipo_vehiculo SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
+    esta_activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vehiculos (
+    id_vehiculo SERIAL PRIMARY KEY,
+    placa VARCHAR(50) UNIQUE NOT NULL,
+    color VARCHAR(50),
+    capacidad_peso_g NUMERIC(10, 2) NOT NULL,
+    capacidad_volumen_m3 NUMERIC(10, 2) NOT NULL,
+    id_tipo_vehiculo INT REFERENCES tipo_vehiculos(id_tipo_vehiculo)
+);
+
+CREATE TABLE transportistas (
+    id_transportista SERIAL PRIMARY KEY,
+    id_usuario INT REFERENCES usuarios(id_usuario),
+    telefono VARCHAR(100),
+    esta_activo boolean default true,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE jornadas (
+    id_jornada SERIAL PRIMARY KEY,
+    fecha DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE rutas (
+    id_ruta SERIAL PRIMARY KEY,
+    id_ciudad_destino INT REFERENCES ciudades(id_ciudad),
+    id_ciudad_remitente INT REFERENCES ciudades(id_ciudad),
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(500),
+    tiempo_entrega_estimado_horas INT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transportistas_jornada (
+    id_transportista_jornada SERIAL PRIMARY KEY,
+    id_transportista INT REFERENCES transportistas(id_transportista),
+    id_jornada INT REFERENCES jornadas(id_jornada),
+    id_vehiculo INT REFERENCES vehiculos(id_vehiculo),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transportistas_jornada_orden_envio (
+    id_transportista_jornada_orden_envio SERIAL PRIMARY KEY,
+    id_transportista_jornada INT REFERENCES transportistas_jornada(id_transportista_jornada),
+    id_orden_envio INT REFERENCES orden_envios(id_orden_envio),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE ciudades_paraderos (
+    id_ciudad_paradero SERIAL PRIMARY KEY,
+    id_ruta INT REFERENCES rutas(id_ruta),
+    id_ciudad INT REFERENCES ciudades(id_ciudad),
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE
+    jornadas
+ADD
+    COLUMN id_ruta INT REFERENCES rutas(id_ruta);

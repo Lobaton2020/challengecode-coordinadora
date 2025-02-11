@@ -1,6 +1,10 @@
 import { createDependendencies } from "./dependencies/Dependencies";
 import {
+  asignarEnvioHandler,
   consultaRastreoGuiaHandler,
+  consultaRutaJornadaGuiaHandler,
+  consultaTransportistasDisponiblesHandler,
+  consultaVehiculosDisponiblesHandler,
   crearEnvioHandler,
 } from "./handlers/EnviosHandler";
 import { DEPENDENCIES_INJECTION } from "../_common/dependencies/Dependencies";
@@ -13,6 +17,8 @@ import { Roles } from "../auth/domain/enum/Roles";
 import { createValidator } from "express-joi-validation";
 import { ICrearEnvioValidation } from "../../infraestructure/server/validations/ICrearEnvioValidation";
 import { IRastreoGuiaValidation } from "../../infraestructure/server/validations/IRastreoGuiaValidation";
+import { IRutaGuiaValidation } from "../../infraestructure/server/validations/IRutaGuiaValidation";
+import { IAsignarEnvioValidation } from "../../infraestructure/server/validations/IAsignarEnvioValidation";
 
 export class EnviosModule implements IModule {
   private validator = createValidator({ passError: true });
@@ -44,6 +50,51 @@ export class EnviosModule implements IModule {
         ],
         validation:[
           this.validator.params(IRastreoGuiaValidation)
+        ]
+      },
+      {
+        method: HttpMethod.GET,
+        handler: consultaTransportistasDisponiblesHandler,
+        path: "/transportistas",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.CLIENTE, Roles.ADMIN, Roles.BACKOFFOCE])
+        ],
+      },
+      {
+        method: HttpMethod.GET,
+        handler: consultaRutaJornadaGuiaHandler,
+        path: "/jornadas/:numero_guia",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.CLIENTE, Roles.ADMIN, Roles.BACKOFFOCE])
+        ],
+        validation:[
+          this.validator.params(IRastreoGuiaValidation)
+        ]
+      },
+      {
+        method: HttpMethod.GET,
+        handler: consultaVehiculosDisponiblesHandler,
+        path: "/vehiculos/:id_ruta",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.CLIENTE, Roles.ADMIN, Roles.BACKOFFOCE])
+        ],
+        validation:[
+          this.validator.params(IRutaGuiaValidation)
+        ]
+      },
+      {
+        method: HttpMethod.POST,
+        handler: asignarEnvioHandler,
+        path: "/asignaciones",
+        middlewares: [
+          autenticacionMiddleware,
+          autorizacionMiddleware([Roles.ADMIN])
+        ],
+        validation:[
+          this.validator.body(IAsignarEnvioValidation)
         ]
       },
     ];

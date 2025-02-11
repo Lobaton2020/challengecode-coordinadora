@@ -1,14 +1,13 @@
-import { newDb } from 'pg-mem';
-import fs from 'fs';
+import { DataType, newDb } from "pg-mem";
+import fs from "fs";
 export const creacionMockDb = () => {
     const dbmem = newDb();
-
     dbmem.public.interceptQueries((sql) => {
-        let newSql = sql.replace(/\bnumeric\s*\(\s*\d+\s*,\s*\d+\s*\)/g, 'float');
-        newSql = newSql.replace(/serial4/g, 'serial');
-        newSql = newSql.replace(/int8/g, 'int');
-        newSql = newSql.replace(/int2/g, 'int');
-        newSql = newSql.replace(/_int4/g, 'int[]');
+        let newSql = sql.replace(/\bnumeric\s*\(\s*\d+\s*,\s*\d+\s*\)/g, "float");
+        newSql = newSql.replace(/serial4/g, "serial");
+        newSql = newSql.replace(/int8/g, "int");
+        newSql = newSql.replace(/int2/g, "int");
+        newSql = newSql.replace(/_int4/g, "int[]");
 
         if (sql !== newSql) {
             return dbmem.public.many(newSql);

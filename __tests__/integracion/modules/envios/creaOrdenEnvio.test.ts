@@ -11,6 +11,30 @@ import { ValidacionUsuarioUseCase } from "../../../../src/modules/auth/applicati
 import { HttpCode } from '../../../../src/infraestructure/common/enum/HttpCode';
 import { EstadosEnvio } from '../../../../src/modules/envios/domain/enum/EstadosEnvio';
 
+export const payload = {
+  "id_tipo_producto": 8,
+  "es_fragil": false,
+  "direccion_remitente": {
+    "id_tipo_via": 5,
+    "id_ciudad": 23,
+    "via": "21",
+    "numero": "01",
+    "detalle": "Zona industrial"
+  },
+  "direccion_destino": {
+      "id_tipo_via": 5,
+      "id_ciudad": 21,
+      "via": "26d",
+      "numero": "32",
+      "detalle": "Cerca del parque la floresta"
+  },
+  "contenido": "Plancha de cabello para risos",
+  "largo_cm": 20,
+  "ancho_cm": 10,
+  "alto_cm": 30,
+  "peso_g": 250,
+};
+
 describe("Se debe crear una nueva orde de evio sobre un paquete", () => {
   let app: Application;
   let prefix: string;
@@ -18,29 +42,7 @@ describe("Se debe crear una nueva orde de evio sobre un paquete", () => {
   const db = creacionMockDb();
   let token: string;
 
-  const payload = {
-    "id_tipo_producto": 8,
-    "es_fragil": false,
-    "direccion_remitente": {
-      "id_tipo_via": 5,
-      "id_ciudad": 6,
-      "via": "21",
-      "numero": "01",
-      "detalle": "Zona industrial"
-    },
-    "direccion_destino": {
-        "id_tipo_via": 5,
-        "id_ciudad": 7,
-        "via": "26d",
-        "numero": "32",
-        "detalle": "Cerca del parque la floresta"
-    },
-    "contenido": "Plancha de cabello para risos",
-    "largo_cm": 20,
-    "ancho_cm": 10,
-    "alto_cm": 30,
-    "peso_g": 250,
-  };
+
 
   beforeAll(async () => {
     server = serverApp;

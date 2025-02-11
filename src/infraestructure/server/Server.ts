@@ -165,6 +165,7 @@ export class Server implements IServer {
       res: Response,
       next: NextFunction
     ) => {
+      console.log(err)
       this.logger.log(
         `ERROR: ${
           err.message ?? typeof err === "object"
