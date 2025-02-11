@@ -42,7 +42,7 @@ describe("Se debe consular consulta jornadas de envio disponibles", () => {
         Authorization: `Bearer ${token}`,
       }
     const r = await request(app)
-      .get(`${prefix}/envios/rutas/${numero_guia}`)
+      .get(`${prefix}/envios/jornadas/${numero_guia}`)
       .set(headers)
 
     expect(r.status).toBe(HttpCode.OK);
